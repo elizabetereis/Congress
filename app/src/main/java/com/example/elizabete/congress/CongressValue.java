@@ -16,8 +16,9 @@ public class CongressValue implements Serializable {
 
     @Override
     public String toString() {
-        return "None: " + mName + "\nData limite submisao: " +
-                mSubmissionDeadline + "\nData limite revisao: " + mReviewDeadline;
+        return mName +
+                "\nSubmission Deadline: " + mSubmissionDeadline +
+                "\nReview Deadline: " + mReviewDeadline;
     }
 
     public CongressValue(){

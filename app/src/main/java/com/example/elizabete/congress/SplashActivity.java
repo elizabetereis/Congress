@@ -35,14 +35,12 @@ public class SplashActivity extends Activity {
 
         setContentView(R.layout.activity_congress_splash);
         textView = (TextView) this.findViewById(R.id.textView2);
-        textView.setText("Running.......");
+        textView.setText("Running...");
         CongressDAO dao = new CongressDAO(SplashActivity.this);
         if(dao.getLista().size() ==0){
             new JSONParse().execute();
             textView.append("\nConsumiu do webservice");
-            Log.i("INFO","Consumiu do webservice");
         }else{
-            Log.i("JSON","Consumiu do SQLite");
             textView.append("\nConsumiu do SQLite");
         }
 
@@ -87,8 +85,6 @@ public class SplashActivity extends Activity {
             json = Json();
             dao.dropAll();
 
-            Log.i("Json", "json");
-
             try {
                 // Getting JSON Array
                 link = json;
@@ -104,8 +100,6 @@ public class SplashActivity extends Activity {
                     congressValue.setSubmissionDeadline(jObj.getString("submissionDeadline"));
 
                     dao.salvar(congressValue);
-                    Log.i("Salvar", congressValue.getName());
-
                     dao.close();
 
                 }
@@ -145,17 +139,10 @@ public class SplashActivity extends Activity {
             urlConn.setDoInput(true);
             // Starts the query
             urlConn.connect();
-            Log.i("Teste", "initializing json");
 
             InputStream inputStream = urlConn.getInputStream();
             resp = IOUtils.toString(inputStream);
-            Log.i("JsonString", resp);
             json = new JSONArray(resp);
-
-            Log.i("Teste", resp);
-
-            System.out.println("Check your device/emulator for notification or logcat for " +
-                    "confirmation of the receipt of the GCM message.");
 
             return json;
 
