@@ -14,6 +14,12 @@ public class CongressValue implements Serializable {
     private String mSubmissionDeadline;
     private String mReviewDeadline;
 
+    @Override
+    public String toString() {
+        return "None: " + mName + "\nData limite submisao: " +
+                mSubmissionDeadline + "\nData limite revisao: " + mReviewDeadline;
+    }
+
     public CongressValue(){
 
     }

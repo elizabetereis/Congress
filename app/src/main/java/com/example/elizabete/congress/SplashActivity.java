@@ -14,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
@@ -35,6 +36,15 @@ public class SplashActivity extends Activity {
         setContentView(R.layout.activity_congress_splash);
         textView = (TextView) this.findViewById(R.id.textView2);
         textView.setText("Running.......");
+        CongressDAO dao = new CongressDAO(SplashActivity.this);
+        if(dao.getLista().size() ==0){
+            new JSONParse().execute();
+            textView.append("\nConsumiu do webservice");
+            Log.i("INFO","Consumiu do webservice");
+        }else{
+            Log.i("JSON","Consumiu do SQLite");
+            textView.append("\nConsumiu do SQLite");
+        }
 
         new Handler().postDelayed(new Runnable() {
 
@@ -43,38 +53,12 @@ public class SplashActivity extends Activity {
                 Intent i = new Intent(SplashActivity.this, CongressActivity.class);
                 startActivity(i);
                 finish();
-
-                new JSONParse().execute();
-
             }
         }, SPLASH_TIME_OUT);
 
 
     }
 
-    public void printTest() throws ParseException {
-
-        CongressValue congressValue = new CongressValue();
-        CongressDAO dao = new CongressDAO(SplashActivity.this);
-
-        String sSubmission = "2017-08-09";
-        String sReview = "2017-08-09";
-        congressValue.setId(1);
-        congressValue.setName("congresso1");
-        congressValue.setReviewDeadline(sReview);
-        congressValue.setSubmissionDeadline(sSubmission);
-
-        dao.dropAll();
-        dao.salvar(congressValue);
-        congressValue.setId(2);
-        congressValue.setName("congresso2");
-        dao.salvar(congressValue);
-        congressValue.setId(3);
-        congressValue.setName("congresso3");
-        dao.salvar(congressValue);
-        dao.close();
-        Log.i("Salvar", congressValue.getName());
-    }
     //consumindo dados
     public class JSONParse extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog pDialog;
@@ -151,12 +135,16 @@ public class SplashActivity extends Activity {
 
         JSONArray json = null;
         String resp = null;
-        URLConnection urlConn = null;
+        HttpURLConnection urlConn = null;
 
         try {
             // Create connection to send GCM Message request.
-            URL url1 = new URL("http://192.168.1.4:8000/congresses");
-            urlConn = url1.openConnection();
+            URL url1 = new URL("http://192.168.1.5/tedb-congress/public/congresses");
+            urlConn = (HttpURLConnection) url1.openConnection();
+            urlConn.setRequestMethod("GET");
+            urlConn.setDoInput(true);
+            // Starts the query
+            urlConn.connect();
             Log.i("Teste", "initializing json");
 
             InputStream inputStream = urlConn.getInputStream();
